@@ -15,7 +15,7 @@
     "title": "Jaripeo",
     "body": "",
     "image": "/images/jaripeo.jpg",
-    "credits": "Autor: Kenia, Mayra"
+    "credits": "Autor: Kenia, Anayancy"
   },
   {
     "title": "Juegos Mecánicos",
@@ -46,5 +46,11 @@
     "body": "",
     "image": "/images/excursion.jpg",
     "credits": "Autor: Cristian"
+  },
+  {
+    "title": "Comida",
+    "body": "En la semana santa en Yahualica, Hgo. se come zacahuil, pollo ranchero, pollo huasteco, enchiladas rojas y verdes, tamales en hoja de platano, pescado ahumado, carnitas de cerdo y sopes",
+    "image": "/images/comida.jpg",
+    "credits": "Autor: Epifania, Adrian, Diana"
   }
 ]
