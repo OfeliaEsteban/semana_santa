@@ -14,15 +14,15 @@ interface FeriaItem {
 
 export default function Home() {
     const [feriaData, setFeriaData] = useState<FeriaItem[]>([]);
+    const [expandedImage, setExpandedImage] = useState<string | null>(null); // Estado para la imagen expandida
 
     useEffect(() => {
         fetch("/data.json")
             .then((res) => res.json())
             .then((data) => {
-                // Evaluamos si cada tarjeta necesita el botón "Ver más"
                 const updatedData = data.map((item: FeriaItem) => {
                     const MAX_LINES = 3; // Máximo de líneas visibles
-                    const truncatedText = item.body.split(" ").slice(0, MAX_LINES * 10).join(" "); // Aproximación
+                    const truncatedText = item.body.split(" ").slice(0, MAX_LINES * 10).join(" ");
                     return {
                         ...item,
                         isExpanded: false,
@@ -42,13 +42,20 @@ export default function Home() {
         );
     };
 
+    const openImage = (imageSrc: string) => {
+        setExpandedImage(imageSrc); // Abre la imagen en tamaño completo
+    };
+
+    const closeImage = () => {
+        setExpandedImage(null); // Cierra la imagen expandida
+    };
+
     return (
         <div className="min-h-screen p-8 pb-20 sm:p-20 font-sans bg-gradient-to-r from-purple-100 via-gray-50 to-blue-100">
             <header className="text-center mb-10">
                 <h1 className="text-4xl font-bold text-gray-900">Feria de Semana Santa</h1>
-                <p className="text-lg text-gray-600">
-                    Descubre todas las actividades y eventos de la festividad.
-                </p>
+                <br></br>
+                <p className="text-lg text-gray-600">Descubre todas las actividades y eventos de la festividad en Yahualica, Hidalgo. Por parte del 2° A </p>
             </header>
 
             <main
@@ -67,13 +74,16 @@ export default function Home() {
                             alt={item.title}
                             width={400}
                             height={250}
-                            className="w-full h-56 object-cover"
+                            className="w-full h-56 object-cover cursor-pointer"
+                            onClick={() => openImage(item.image)} // Abrir la imagen al hacer clic
                         />
                         <div className="p-4">
                             <h2 className="text-xl font-bold text-gray-800">{item.title}</h2>
-                            {/* Si la tarjeta está expandida, mostramos todo el texto; si no, lo truncamos */}
-                            <p className={`text-gray-600 mt-2 ${item.isExpanded ? "" : "line-clamp-3"}`}>
-                                {item.body}
+                            <p className="text-gray-600 mt-2">
+                                {item.isExpanded
+                                    ? item.body
+                                    : item.body.split(" ").slice(0, 30).join(" ") + "..." // Truncado dinámico
+                                }
                             </p>
                             <div className="flex justify-between items-center mt-3">
                                 <p className="text-sm text-gray-400">📌 {item.credits}</p>
@@ -90,6 +100,30 @@ export default function Home() {
                     </div>
                 ))}
             </main>
+
+            {/* Modal de imagen expandida */}
+            {expandedImage && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+                    onClick={closeImage} // Cerrar el modal si se hace clic fuera de la imagen
+                >
+                    <div className="relative">
+                        <Image
+                            src={expandedImage}
+                            alt="Imagen expandida"
+                            width={800}
+                            height={600}
+                            className="max-w-full max-h-full object-contain"
+                        />
+                        <button
+                            className="absolute top-4 right-4 text-white text-2xl"
+                            onClick={closeImage}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <footer className="text-center mt-16 text-gray-500">
                 &copy; {new Date().getFullYear()} Feria de Semana Santa
