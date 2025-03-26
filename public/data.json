@@ -1,26 +1,50 @@
 [
   {
-    "title": "Procesión del Viernes Santo",
-    "body": "La tradicional procesión recorre las calles principales con imágenes religiosas y música sacra.",
-    "image": "/images/procesion.jpg",
-    "credits": "Autor: John Doe"
+    "title": "Viacrucis",
+    "body": "",
+    "image": "/images/viacrucis.jpg",
+    "credits": "Autor: Angel, Ian"
   },
   {
-    "title": "Feria Gastronómica",
-    "body": "Disfruta de los platillos típicos de la región, como tamales, atole y mixiotes.",
-    "image": "/images/gastronomia.jpg",
-    "credits": "Autor: John Doe"
+    "title": "Grupos Artisticos",
+    "body": "",
+    "image": "/images/grupos.jpg",
+    "credits": "Autor: Naomi, Galilea"
   },
   {
     "title": "Jaripeo",
     "body": "",
     "image": "/images/jaripeo.jpg",
-    "credits": "Autor: John Doe"
+    "credits": "Autor: Kenia, Mayra"
   },
   {
     "title": "Juegos Mecánicos",
-    "body": "Diversión para toda la familia con los juegos mecánicos.",
+    "body": "",
     "image": "/images/juegos.jpg",
-    "credits": "Autor: John Doe"
+    "credits": "Autor: Yeny, Mayra"
+  },
+  {
+    "title": "Feria",
+    "body": "",
+    "image": "/images/feria.jpg",
+    "credits": "Autor: Renata, Yandy"
+  },
+  {
+    "title": "Eventos Deportivos",
+    "body": "",
+    "image": "/images/deportivos.jpg",
+    "credits": "Autor: Zuribeth, Yarelin"
+  },
+  {
+    "title": "Pirotecnia",
+    "body": "",
+    "image": "/images/pirotecnica.jpg",
+    "credits": "Autor: Yamileth"
+  },
+  {
+    "title": "Excursión",
+    "body": "",
+    "image": "/images/excursion.jpg",
+    "credits": "Autor: Cristian"
   }
 ]
