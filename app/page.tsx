@@ -15,23 +15,49 @@ interface FeriaItem {
 export default function Home() {
     const [feriaData, setFeriaData] = useState<FeriaItem[]>([]);
     const [expandedImage, setExpandedImage] = useState<string | null>(null); // Estado para la imagen expandida
+    const [visitCount, setVisitCount] = useState<number>(0); // Estado para el contador de visitas
 
     useEffect(() => {
-        fetch("/data.json")
-            .then((res) => res.json())
-            .then((data) => {
-                const updatedData = data.map((item: FeriaItem) => {
-                    const MAX_LINES = 3; // Máximo de líneas visibles
-                    const truncatedText = item.body.split(" ").slice(0, MAX_LINES * 10).join(" ");
-                    return {
-                        ...item,
-                        isExpanded: false,
-                        requiresExpand: item.body.length > truncatedText.length,
-                    };
-                });
-                setFeriaData(updatedData);
-            })
-            .catch((err) => console.error("Error cargando datos:", err));
+        const storedData = localStorage.getItem("feriaData");
+        const storedVisitCount = localStorage.getItem("visitCount");
+
+        if (storedData) {
+            setFeriaData(JSON.parse(storedData));
+        } else {
+            fetch("/data.json")
+                .then((res) => res.json())
+                .then((data) => {
+                    const updatedData = data.map((item: FeriaItem) => {
+                        const MAX_LINES = 3; // Máximo de líneas visibles
+                        const truncatedText = item.body.split(" ").slice(0, MAX_LINES * 10).join(" ");
+                        return {
+                            ...item,
+                            isExpanded: false,
+                            requiresExpand: item.body.length > truncatedText.length,
+                        };
+                    });
+                    setFeriaData(updatedData);
+                })
+                .catch((err) => console.error("Error cargando datos:", err));
+        }
+
+        if (storedVisitCount) {
+            setVisitCount(parseInt(storedVisitCount, 10));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (feriaData.length > 0) {
+            localStorage.setItem("feriaData", JSON.stringify(feriaData));
+        }
+    }, [feriaData]);
+
+    useEffect(() => {
+        setVisitCount((prevCount) => {
+            const newCount = prevCount + 1;
+            localStorage.setItem("visitCount", newCount.toString());
+            return newCount;
+        });
     }, []);
 
     const handleExpand = (index: number) => {
@@ -127,6 +153,7 @@ export default function Home() {
             )}
 
             <footer className="text-center mt-16 text-gray-500">
+                <p>Visitas: {visitCount}</p> {/* Mostrar contador de visitas */}
                 &copy; {new Date().getFullYear()} Telesecundaria 92, Yahualica, Hidalgo
             </footer>
         </div>
