@@ -107,10 +107,11 @@ export default function Home() {
                     className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
                     onClick={closeImage} // Cerrar el modal si se hace clic fuera de la imagen
                 >
-                    <div className="relative">
+                    <div className="relative w-full h-full flex justify-center items-center">
                         <Image
                             src={expandedImage}
                             alt="Imagen expandida"
+                            layout="intrinsic"
                             width={800}
                             height={600}
                             className="max-w-full max-h-full object-contain"
