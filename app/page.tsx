@@ -126,7 +126,7 @@ export default function Home() {
             )}
 
             <footer className="text-center mt-16 text-gray-500">
-                &copy; {new Date().getFullYear()} Feria de Semana Santa
+                &copy; {new Date().getFullYear()} Telesecundaria 92, Yahualica, Hidalgo
             </footer>
         </div>
     );
