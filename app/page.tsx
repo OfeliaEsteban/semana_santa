@@ -8,18 +8,16 @@ interface FeriaItem {
     body: string;
     image: string;
     credits: string;
-    isExpanded?: boolean; // Estado para manejar si la tarjeta está expandida o no
-    requiresExpand?: boolean; // Estado para saber si es necesario el botón "Ver más"
+    isExpanded?: boolean;
+    requiresExpand?: boolean;
 }
 
 export default function Home() {
     const [feriaData, setFeriaData] = useState<FeriaItem[]>([]);
-    const [expandedImage, setExpandedImage] = useState<string | null>(null); // Estado para la imagen expandida
-    const [visitCount, setVisitCount] = useState<number>(0); // Estado para el contador de visitas
+    const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
     useEffect(() => {
         const storedData = localStorage.getItem("feriaData");
-        const storedVisitCount = localStorage.getItem("visitCount");
 
         if (storedData) {
             setFeriaData(JSON.parse(storedData));
@@ -27,22 +25,14 @@ export default function Home() {
             fetch("/data.json")
                 .then((res) => res.json())
                 .then((data) => {
-                    const updatedData = data.map((item: FeriaItem) => {
-                        const MAX_LINES = 3; // Máximo de líneas visibles
-                        const truncatedText = item.body.split(" ").slice(0, MAX_LINES * 10).join(" ");
-                        return {
-                            ...item,
-                            isExpanded: false,
-                            requiresExpand: item.body.length > truncatedText.length,
-                        };
-                    });
+                    const updatedData = data.map((item: FeriaItem) => ({
+                        ...item,
+                        isExpanded: false,
+                        requiresExpand: item.body.length > 150,
+                    }));
                     setFeriaData(updatedData);
                 })
                 .catch((err) => console.error("Error cargando datos:", err));
-        }
-
-        if (storedVisitCount) {
-            setVisitCount(parseInt(storedVisitCount, 10));
         }
     }, []);
 
@@ -52,71 +42,39 @@ export default function Home() {
         }
     }, [feriaData]);
 
-    useEffect(() => {
-        setVisitCount((prevCount) => {
-            const newCount = prevCount + 1;
-            localStorage.setItem("visitCount", newCount.toString());
-            return newCount;
-        });
-    }, []);
-
-    const handleExpand = (index: number) => {
-        setFeriaData((prevData) =>
-            prevData.map((item, i) =>
-                i === index ? { ...item, isExpanded: !item.isExpanded } : item
-            )
-        );
-    };
-
-    const openImage = (imageSrc: string) => {
-        setExpandedImage(imageSrc); // Abre la imagen en tamaño completo
-    };
-
-    const closeImage = () => {
-        setExpandedImage(null); // Cierra la imagen expandida
+    const toggleExpand = (index: number) => {
+        setFeriaData(prevData => prevData.map((item, i) => i === index ? { ...item, isExpanded: !item.isExpanded } : item));
     };
 
     return (
-        <div className="min-h-screen p-8 pb-20 sm:p-20 font-sans bg-gradient-to-r from-purple-100 via-gray-50 to-blue-100">
-            <header className="text-center mb-10">
-                <h1 className="text-4xl font-bold text-gray-900">Feria de Semana Santa</h1>
-                <br></br>
-                <p className="text-lg text-gray-600">Descubre todas las actividades y eventos de la festividad en Yahualica, Hidalgo. Por parte del 2° A </p>
+        <div className="min-h-screen p-10 bg-gradient-to-r from-indigo-300 via-purple-200 to-blue-300 text-gray-900 font-sans">
+            <header className="text-center mb-12">
+                <h1 className="text-5xl font-extrabold">Feria de Semana Santa</h1>
+                <p className="text-lg mt-3">Descubre todas las actividades y eventos en Yahualica, Hidalgo – 2° A</p>
             </header>
 
-            <main
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                style={{
-                    gridAutoRows: "minmax(200px, auto)", // Altura mínima
-                }}
-            >
+            <main className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {feriaData.map((item, index) => (
-                    <div
-                        key={index}
-                        className="bg-gradient-to-b from-white via-gray-50 to-gray-200 rounded-2xl shadow-lg overflow-hidden transition-transform transform hover:scale-105 border border-gray-200 hover:border-gray-400"
-                    >
+                    <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
                         <Image
                             src={item.image}
                             alt={item.title}
                             width={400}
                             height={250}
                             className="w-full h-56 object-cover cursor-pointer"
-                            onClick={() => openImage(item.image)} // Abrir la imagen al hacer clic
+                            onClick={() => setExpandedImage(item.image)}
                         />
-                        <div className="p-4">
-                            <h2 className="text-xl font-bold text-gray-800">{item.title}</h2>
-                            <p className="text-gray-600 mt-2">
-                                {item.isExpanded
-                                    ? item.body
-                                    : item.body.split(" ").slice(0, 30).join(" ") + "..." // Truncado dinámico
-                                }
+                        <div className="p-5">
+                            <h2 className="text-2xl font-bold">{item.title}</h2>
+                            <p className="mt-3 text-gray-700">
+                                {item.isExpanded ? item.body : `${item.body.substring(0, 150)}...`}
                             </p>
-                            <div className="flex justify-between items-center mt-3">
-                                <p className="text-sm text-gray-400">📌 {item.credits}</p>
-                                {item.requiresExpand && ( // Mostrar botón solo si hay más texto para expandir
+                            <div className="flex justify-between items-center mt-4">
+                                <p className="text-sm text-gray-500">📌 {item.credits}</p>
+                                {item.requiresExpand && (
                                     <button
-                                        onClick={() => handleExpand(index)}
-                                        className="text-sm text-blue-500 hover:underline"
+                                        onClick={() => toggleExpand(index)}
+                                        className="text-sm text-indigo-600 hover:underline"
                                     >
                                         {item.isExpanded ? "Ver menos" : "Ver más"}
                                     </button>
@@ -127,33 +85,22 @@ export default function Home() {
                 ))}
             </main>
 
-            {/* Modal de imagen expandida */}
             {expandedImage && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-                    onClick={closeImage} // Cerrar el modal si se hace clic fuera de la imagen
-                >
-                    <div className="relative w-full h-full flex justify-center items-center">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={() => setExpandedImage(null)}>
+                    <div className="relative max-w-4xl max-h-3/4 p-5 bg-white rounded-lg shadow-lg">
                         <Image
                             src={expandedImage}
                             alt="Imagen expandida"
-                            layout="intrinsic"
                             width={800}
                             height={600}
-                            className="max-w-full max-h-full object-contain"
+                            className="max-w-full max-h-full object-contain rounded-lg"
                         />
-                        <button
-                            className="absolute top-4 right-4 text-white text-2xl"
-                            onClick={closeImage}
-                        >
-                            ✕
-                        </button>
+                        <button className="absolute top-3 right-3 text-gray-700 text-3xl" onClick={() => setExpandedImage(null)}>✕</button>
                     </div>
                 </div>
             )}
 
-            <footer className="text-center mt-16 text-gray-500">
-                <p>Visitas: {visitCount}</p> {/* Mostrar contador de visitas */}
+            <footer className="text-center mt-16 text-gray-700 text-sm">
                 &copy; {new Date().getFullYear()} Telesecundaria 92, Yahualica, Hidalgo
             </footer>
         </div>
