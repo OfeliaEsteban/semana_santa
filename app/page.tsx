@@ -86,16 +86,17 @@ export default function Home() {
             </main>
 
             {expandedImage && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={() => setExpandedImage(null)}>
-                    <div className="relative max-w-4xl max-h-3/4 p-5 bg-white rounded-lg shadow-lg">
+                <div className="fixed inset-0 flex justify-center items-center z-50 p-4 bg-black bg-opacity-70" onClick={() => setExpandedImage(null)}>
+                    <div className="relative max-w-full max-h-full flex justify-center items-center p-6">
                         <Image
                             src={expandedImage}
                             alt="Imagen expandida"
-                            width={800}
-                            height={600}
-                            className="max-w-full max-h-full object-contain rounded-lg"
+                            layout="intrinsic"
+                            width={600}
+                            height={900}
+                            className="max-w-[80vw] max-h-[80vh] object-contain rounded-lg border-2 border-gray-300"
                         />
-                        <button className="absolute top-3 right-3 text-gray-700 text-3xl" onClick={() => setExpandedImage(null)}>✕</button>
+                        <button className="absolute top-5 right-5 text-white text-3xl bg-gray-800 bg-opacity-50 rounded-full p-2" onClick={() => setExpandedImage(null)}>✕</button>
                     </div>
                 </div>
             )}
